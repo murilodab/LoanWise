@@ -1,12 +1,12 @@
 //Fetch values from the page
-
+//starter
 function getValues() {
 
     let loanAmount = document.getElementById("loanAmount").value;
     let payments = document.getElementById("payments").value;
     let rate = document.getElementById("rate").value;
 
-
+    //return object to return multiple attributes
     let returnObj = calculateLoan(loanAmount, payments, rate);
 
     displayValues(returnObj);
@@ -35,8 +35,6 @@ function calculateLoan(loanAmount, months, rate) {
     let balance = [];
     //-------------------------------------
 
-    
-
     let remainingBalance = loanAmount;
 
     let totalInt = 0;
@@ -44,10 +42,6 @@ function calculateLoan(loanAmount, months, rate) {
     let interestPayment = 0;
 
     let principalPayment = totalMonthlyPayment - interestPayment;
-
-    //formatting currency
-
-   
 
 
     for (let index = 1; index <= months; index++) {
@@ -61,6 +55,7 @@ function calculateLoan(loanAmount, months, rate) {
         totalInt += interestPayment;
 
 
+        //write values to the arrays
         payment.push(totalMonthlyPayment);
 
         principal.push(principalPayment);
@@ -74,7 +69,7 @@ function calculateLoan(loanAmount, months, rate) {
         month.push(index);
 
     }
-
+    //Rounding up values
     for (let index = 0; index < months; index++) {
         
         payment[index] = payment[index].toFixed(2);
@@ -112,6 +107,7 @@ function displayValues(returnObj) {
     //clear the table
     tableBody.innerHTML = "";
 
+    //Display table on the page using the template
     for (let i = 0; i < returnObj.month.length; i++) {
         
         let tableRow = document.importNode(templateRow.content, true);
@@ -136,7 +132,7 @@ function displayValues(returnObj) {
         currency: 'USD',
     });
 
-    //Display Values on top
+    //Display main Values on top
 
     let i = returnObj.month.length - 1; //last index
 
@@ -152,6 +148,7 @@ function displayValues(returnObj) {
 
     let totalCost = totalPrincipal + totalInterest;
 
+    //writes to the page
     document.getElementById("monthlyPayments").innerHTML = `${USDollar.format(intMonthlyPayment)}`;
     document.getElementById("totalPrincipal").innerHTML = `${USDollar.format(totalPrincipal)}`;
     document.getElementById("totalInterest").innerHTML = `${USDollar.format(totalInterest)}`;

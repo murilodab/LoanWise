@@ -2,7 +2,7 @@
 <html lang="en" class="h-100">
 
 <head>
-    <title>LoanWise: A Coding Project by Murilo Barbosa</title>
+    <title>Loan Wise: A Coding Project by Murilo Barbosa</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,7 +24,7 @@
     <nav class="navbar navbar-expand-md navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html"><img src="img/mark3a.svg"
-                    class="d-inline-block align-text-top pb-1" width="35" height="30"> LoanWise</a>
+                    class="d-inline-block align-text-top pb-1" width="35" height="30"> Loan Wise</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -54,21 +54,192 @@
     <!-- ++++++++ MAIN SECTION ++++++++++++ -->
     <main class="flex-shrink-0">
         <div class="container py-5 px-5 mt-5">
-            <h2 class="border-1 border-bottom border-dark">The Code for LoanWise</h2>
+            <h2 class="border-1 border-bottom border-dark">The Code for Loan Wise</h2>
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col-lg-8">
                     <pre class="line-numbers"><code class="language-javascript">
-                        //Call Hello World
-                        function helloWorld(){
-                         alert("Hello World");
-                        }
+                        //Fetch values from the page
+//starter
+function getValues() {
+
+    let loanAmount = document.getElementById("loanAmount").value;
+    let payments = document.getElementById("payments").value;
+    let rate = document.getElementById("rate").value;
+
+    //return object to return multiple attributes
+    let returnObj = calculateLoan(loanAmount, payments, rate);
+
+    displayValues(returnObj);
+
+
+}
+
+//Calculate payment,principal,interest,total interest,balance
+function calculateLoan(loanAmount, months, rate) {
+
+    let returnObj = {};
+
+    let totalMonthlyPayment = loanAmount * (rate / 1200) / (1 - (1 + rate / 1200) ** (-months));
+
+    // ----------  Table Columns ---------
+    let month = [];
+
+    let payment = [];
+
+    let principal = [];
+
+    let interest = [];
+
+    let totalInterest = [];
+
+    let balance = [];
+    //-------------------------------------
+
+    let remainingBalance = loanAmount;
+
+    let totalInt = 0;
+
+    let interestPayment = 0;
+
+    let principalPayment = totalMonthlyPayment - interestPayment;
+
+
+    for (let index = 1; index <= months; index++) {
+
+        interestPayment = /* previous remaining balance */remainingBalance * (rate / 1200);
+
+        principalPayment = totalMonthlyPayment - interestPayment;
+
+        remainingBalance = remainingBalance - principalPayment;
+
+        totalInt += interestPayment;
+
+
+        //write values to the arrays
+        payment.push(totalMonthlyPayment);
+
+        principal.push(principalPayment);
+
+        interest.push(interestPayment);
+
+        totalInterest.push(totalInt);
+
+        balance.push(remainingBalance);
+
+        month.push(index);
+
+    }
+    //Rounding up values
+    for (let index = 0; index < months; index++) {
+        
+        payment[index] = payment[index].toFixed(2);
+        principal[index] = principal[index].toFixed(2);
+        interest[index] = interest[index].toFixed(2);
+        totalInterest[index] = totalInterest[index].toFixed(2);
+        balance[index] = balance[index].toFixed(2);
+        
+    }
+
+    returnObj.month = month;
+
+    returnObj.payment = payment;
+
+    returnObj.principal = principal;
+
+    returnObj.interest = interest;
+
+    returnObj.totalInterest = totalInterest;
+
+    returnObj.balance = balance;
+
+
+    return returnObj;
+}
+
+
+//Display
+function displayValues(returnObj) {
+
+    //get the table body element from the page
+    let tableBody = document.getElementById("results");
+    //get the table template
+    let templateRow = document.getElementById("tableTemplate");
+    //clear the table
+    tableBody.innerHTML = "";
+
+    //Display table on the page using the template
+    for (let i = 0; i < returnObj.month.length; i++) {
+        
+        let tableRow = document.importNode(templateRow.content, true);
+
+        let rowCols = tableRow.querySelectorAll("td");
+
+        rowCols[0].textContent = returnObj.month[i];
+        rowCols[1].textContent = returnObj.payment[i];
+        rowCols[2].textContent = returnObj.principal[i];
+        rowCols[3].textContent = returnObj.interest[i];
+        rowCols[4].textContent = returnObj.totalInterest[i];
+        rowCols[5].textContent = returnObj.balance[i];
+
+        tableBody.appendChild(tableRow);
+        
+    }
+
+    //fomratting currency values
+
+    let USDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+
+    //Display main Values on top
+
+    let i = returnObj.month.length - 1; //last index
+
+    let intMonthlyPayment = returnObj.payment[i];
+
+    let totalPrincipal = document.getElementById("loanAmount").value;
+
+    totalPrincipal = parseInt(totalPrincipal);
+
+    let totalInterest = returnObj.totalInterest[i];
+
+    totalInterest = parseInt(totalInterest);
+
+    let totalCost = totalPrincipal + totalInterest;
+
+    //writes to the page
+    document.getElementById("monthlyPayments").innerHTML = `${USDollar.format(intMonthlyPayment)}`;
+    document.getElementById("totalPrincipal").innerHTML = `${USDollar.format(totalPrincipal)}`;
+    document.getElementById("totalInterest").innerHTML = `${USDollar.format(totalInterest)}`;
+    document.getElementById("totalCost").innerHTML = `${USDollar.format(totalCost)}`;
+
+}
                     </code>
                 </pre>
                 </div>
                 <div class="col-lg-4">
-                    <p>The code is sctructured in one function.</p>
-                    <h5>Hello World</h5>
-                    <p>Hello World is a function that displays an alert with a message of "Hello World". </p>
+                    <p>The code is sctructured in Three functions.</p>
+                    <h5>getValues</h5>
+                    <p>The getValues() function plays a crucial role in the loan calculator program. It
+                        serves as the entry point for fetching user input from the webpage, triggering the loan
+                        calculation, and then displaying the results. It retrieves the
+                        values from specific HTML elements on the page.
+                    </p>
+                    <h5>calculateLoan</h5>
+                    <p>The calculateLoan() function takes the loan amount, number of payments (months), and interest
+                        rate as input and calculates the monthly payment, principal, interest, total interest paid, and
+                        remaining balance for each month. It then stores these values in separate arrays. </p>
+                    <p>In this code, returnObj is an object that is used to store and organize the calculated loan
+                        details. It acts as a container to hold multiple attributes related to the loan calculation, and
+                        it allows the functions to return all these attributes together as a single unit.</p>
+                    <h5>displayValues</h5>
+                    <p>The displayValues() function takes the calculated values (stored in the returnObj) and displays
+                        them on the page in a table format. It also calculates and displays the total monthly payment,
+                        total principal amount, total interest paid, and the total cost of the loan.
+                    </p>
+                    <p>The code uses the Intl.NumberFormat object to format the currency values in USD (US dollars)
+                        before displaying them on the page.</p>
                 </div>
             </div>
         </div>
@@ -86,23 +257,25 @@
                 <div class="col-4 col-lg-2 d-flex align-items-center justify-content-start justify-content-lg-end pt-1">
                     <div class="row">
                         <div class="col-6 social">
-                            <a class="icon-link" href="https://www.linkedin.com/in/murilo-barbosa-55ab1492/" target="_blank"><i class="fab fa-linkedin fa-2x"></i>
+                            <a class="icon-link" href="https://www.linkedin.com/in/murilo-barbosa-55ab1492/"
+                                target="_blank"><i class="fab fa-linkedin fa-2x"></i>
                             </a>
                         </div>
                         <div class="col-6 social">
-                            <a class="icon-link" href="https://github.com/murilodab" target="_blank"><i class="fab fa-github fa-2x"></i>
+                            <a class="icon-link" href="https://github.com/murilodab" target="_blank"><i
+                                    class="fab fa-github fa-2x"></i>
                             </a>
-                        </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
     </footer>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="js/prism.js"></script>
     <script>
         Prism.plugins.NormalizeWhitespace.setDefaults({

@@ -28,6 +28,7 @@ h6 {
     color: var(--primary-color);
 }
 
+
 footer {
     padding-top: 1rem;
     padding-right: 1rem;
@@ -41,6 +42,9 @@ footer .social>a {
 footer .social>a:hover {
     opacity: .9;
 
+}
+.lead{
+    font-weight: 400;
 }
 
 .logo {
